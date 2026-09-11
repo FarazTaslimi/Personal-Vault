@@ -1,0 +1,1 @@
+export { mini_card } from '../components/mini-card.js';

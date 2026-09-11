@@ -1,0 +1,16 @@
+.mini_card {
+    /* border: 0.5px solid #2a0077; */
+    margin-left: 100px;
+    border: 1px solid red;
+    padding: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mini_card--icon {
+    stroke: var(--primary);
+    width: 3rem !important;
+    height: auto !important;
+    filter: drop-shadow(0 0 10px purple);
+}
