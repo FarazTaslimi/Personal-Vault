@@ -1,4 +1,5 @@
 // import { update } from '../js/update.js';
+import { icons } from '../js/icons.js';
 
 export function home() {
     const header = function() {
@@ -8,16 +9,17 @@ export function home() {
         return (
         `<div class="header">
             <div class="header-title">
-                <div class="dot"></div>
-                <h1 class="title">Personal Vault</h1>
+                <i data-lucide="circle" class="filled-icon header-title--marker"></i>
+                <h1 class="header-title--text">Personal Vault</h1>
             </div>
-            <div class="header-time">
-                <span class="time">${time()}</span>
-                <span class="time-zone">UTC +3:30</span>
+            <div class="header-timer">
+                <span class="header-timer--time">${time()}</span>
+                <span class="header-timer--time_zone">UTC +3:30</span>
             </div>
          </div>`
         );
     };
 
+    icons();
     return `${header()}`;
 }

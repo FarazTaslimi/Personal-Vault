@@ -1,0 +1,84 @@
+@font-face {
+    font-family: Inter;
+    src: url('assets/fonts/Inter-VariableFont_opsz\,wght.ttf') format(truetype);
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Inter;
+    src: url('assets/fonts/Inter-Italic-VariableFont_opsz\,wght.ttf') format(truetype);
+    font-style: italic;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Inter;
+    color: var(--text-light);
+}
+
+:root {
+    font-size: 62.5%;
+
+    --primary: #8553e0;
+    --text-light: #fff;
+    --bg--dark: #07001f;
+}
+
+#app {
+    width: 100dvw;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.filled-icon {
+    fill: currentColor;
+    stroke: none;
+    height: auto;
+}
+
+.header {
+    width: 100%;
+    padding: 24px 48px;
+    background-color: var(--bg--dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 16px;
+}
+
+.header-title--marker {
+    fill: var(--primary);
+    width: 3rem;
+    filter: drop-shadow(4px 2px 40px #ae00ff) drop-shadow(-4px 2px 40px #ae00ff) drop-shadow(-4px -2px 40px #ae00ff) drop-shadow(4px -2px 40px #ae00ff);
+}
+
+.header-title--text {
+    font-size: 2rem;
+}
+
+.header-timer {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 16px;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.header-timer--time {
+    letter-spacing: 1px;
+}
+
+.header-timer--time_zone {
+    color: gray;
+}
