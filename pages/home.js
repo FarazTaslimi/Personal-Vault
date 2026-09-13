@@ -45,12 +45,12 @@ export function home() {
                         <i data-lucide="minus" class="hero-main--personal-information--greeting-message--marker"></i> 
                     </span>
                     <h2 class="hero-main--personal-information--name">Faraz</h2>
-                    <span class="hero-main--personal-information--jobs>Builder. Storyteller. Developer.</span>
+                    <span class="hero-main--personal-information--jobs">Builder. Storyteller. Developer.</span>
+                    <div class="hero-main--personal-information--quick_summary">${mini_card("film", "Movies", "42")} ${mini_card("music", "Songs", "128")} ${mini_card("clock", "Hours", "156")}</div>
                 </div>
-                <div class="hero-main--quick_summary">${mini_card("film", "Movies", "42")} ${mini_card("music", "Songs", "128")} ${mini_card("clock", "Hours", "156")}</div>
             </div>
             <div class="hero-poem">
-                <p class="hero-poem--content">some<br>stories<br>are never<br>meant to be<br>found</p>
+                <p class="hero-poem--content"><span class="hero-poem--content_light">some</span><br><span class="hero-poem--content_dark">stories</span><br><span class="hero-poem--content_dark">are never</span><br><span class="hero-poem--content_light">meant to be</span><br><span class="hero-poem--content_light">found</span></p>
             </div>
          </div>`
         );

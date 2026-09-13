@@ -1,16 +1,33 @@
 .mini_card {
-    /* border: 0.5px solid #2a0077; */
-    margin-left: 100px;
-    border: 1px solid red;
+    border: 2px solid rgb(68, 0, 255);
+    background-color: rgb(8, 1, 19);
+    border-radius: 24px;
     padding: 8px;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 24px;
+    padding: 16px 24px;
 }
 
 .mini_card--icon {
     stroke: var(--primary);
     width: 3rem !important;
     height: auto !important;
-    filter: drop-shadow(0 0 10px purple);
+    filter: drop-shadow(0 0 10px purple) drop-shadow(0 0 10px purple);
+}
+
+.mini_card--info {
+    display: flex;
+    flex-direction: column;
+}
+
+.mini_card--info--counter {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.mini_card--info--title {
+    font-size: 1.6rem;
+    color: gray;
+    font-weight: 600;
 }
