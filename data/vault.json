@@ -1,0 +1,14 @@
+{
+    "songs": [
+        { "id": 1,  "title": "Lose Yourself",       "artist": "Eminem",     "plays": 487, "duration": 304 },
+        { "id": 2,  "title": "Rap God",             "artist": "Eminem",     "plays": 356, "duration": 364 },
+        { "id": 3,  "title": "Without Me",          "artist": "Eminem",     "plays": 298, "duration": 290 },
+        { "id": 4,  "title": "Not Afraid",          "artist": "Eminem",     "plays": 412, "duration": 248 },
+        { "id": 5,  "title": "Rolling in the Deep", "artist": "Adele",      "plays": 334, "duration": 228 },
+        { "id": 6,  "title": "Someone Like You",    "artist": "Adele",      "plays": 276, "duration": 285 },
+        { "id": 7,  "title": "Hello",               "artist": "Adele",      "plays": 289, "duration": 295 },
+        { "id": 8,  "title": "Blinding Lights",     "artist": "The Weeknd", "plays": 521, "duration": 200 },
+        { "id": 9,  "title": "Save Your Tears",     "artist": "The Weeknd", "plays": 378, "duration": 215 },
+        { "id": 10, "title": "Talking to the Moon", "artist": "Bruno Mars", "plays": 445, "duration": 217 }
+    ]
+}

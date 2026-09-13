@@ -1,6 +1,7 @@
 // import { update } from '../js/update.js';
 import { icons } from '../js/icons.js';
-import { mini_card } from '../js/components.js';
+import { mini_card, song_card } from '../js/components.js';
+import { songs as getSongs } from '../api/songs.js';
 
 export function home() {
     const header = function() {
@@ -56,6 +57,74 @@ export function home() {
         );
     };
 
+    const topSongsSection = function() {
+        const songs = getSongs();
+        let songcards = "";
+        
+        for (let i = 0; i < songs.length; i++) {
+            songcards += `${song_card("https://t2.genius.com/unsafe/344x344/https%3A%2F%2Fimages.genius.com%2Fce61c1b2664c5952984e30f9b59f1346.1000x1000x1.png", songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
+        }
+
+        setTimeout(() => {
+            const container = document.querySelector('.top-songs-section--content');
+            const nav = document.querySelector('.top-songs-section--header--nav');
+            const leftBtn = document.getElementById('top-songs-section--header--nav--btn_left');
+            const rightBtn = document.getElementById('top-songs-section--header--nav--btn_right');
+        
+            if (!container || !nav || !leftBtn || !rightBtn) return;
+        
+            const scrollAmount = 524;
+        
+            // Arrow clicks
+            nav.addEventListener('click', (e) => {
+                if (e.target.closest('#top-songs-section--header--nav--btn_left')) {
+                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                } else if (e.target.closest('#top-songs-section--header--nav--btn_right')) {
+                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            });
+        
+            // Update disabled state
+            const updateArrows = () => {
+                const atStart = container.scrollLeft <= 0;
+                const atEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+                leftBtn.classList.toggle('disabled', atStart);
+                rightBtn.classList.toggle('disabled', atEnd);
+            };
+        
+            // Listen to scroll + size changes
+            container.addEventListener('scroll', updateArrows);
+            window.addEventListener('resize', updateArrows);
+        
+            // 🔥 Re-run when container size changes (CSS load, content change)
+            const ro = new ResizeObserver(updateArrows);
+            ro.observe(container);
+        
+            // Run multiple times to catch late layout
+            updateArrows();
+            requestAnimationFrame(updateArrows);
+            setTimeout(updateArrows, 100);
+            setTimeout(updateArrows, 500);
+        }, 100);
+
+        document.addEventListener('icons:refresh', () => {icons();});
+
+        return (
+        `<div class="top-songs-section">
+            <div class="top-songs-section--header">
+                <span class="section--title">top songs</span>
+                <div class="top-songs-section--header--nav">
+                    <i data-lucide="chevron-left" class="top-songs-section--header--nav--btn" id="top-songs-section--header--nav--btn_left"></i>
+                    <i data-lucide="chevron-right" class="top-songs-section--header--nav--btn" id="top-songs-section--header--nav--btn_right"></i>
+                </div>
+            </div>
+            <div class="top-songs-section--content">
+                ${songcards}
+            </div>
+         </div>`
+        );
+    };
+
     icons();
-    return `${header()}${hero()}`;
+    return `${header()}${hero()}${topSongsSection()}`;
 }

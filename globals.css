@@ -32,6 +32,7 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 div.header ~ div {
@@ -215,4 +216,69 @@ div.header ~ div {
 .hero-poem--content_light:last-child {
     border-bottom: 1px solid gray;
     padding-bottom: 16px;
+}
+
+.section--title {
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    word-spacing: 8px;
+    font-weight: 600;
+    border-left: 6px solid var(--primary);
+    /* border-radius: 2px; */
+    padding: 4px 16px;
+}
+
+.top-songs-section {
+    background: var(--bg--dark);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    /* gap: 24px; */
+}
+
+.top-songs-section--header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.top-songs-section--header--nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.top-songs-section--header--nav--btn {
+    filter: drop-shadow(0 0 10px red);
+    cursor: pointer;
+}
+
+.top-songs-section--header--nav--btn:active {
+    opacity: 0.5;
+}
+
+.top-songs-section--header--nav--btn.disabled {
+    opacity: 0.3;
+    /* pointer-events: none; */
+    cursor: not-allowed;
+}
+
+.top-songs-section--content {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    overflow-x: auto;
+    /* overflow-y: auto; */
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    height: 340px;
+    /* padding-top: 20px; */
+    padding: 20px;
+    margin-right: 20px;
+}
+
+.top-songs-section--content::-webkit-scrollbar {
+    display: none;                 /* Chrome/Safari */
 }
