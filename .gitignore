@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Real vault data (local only)
+data/vault.json
+
+# Real audio files
+vault/*
+!vault/.gitkeep
+!vault/songs/
+vault/songs/*
+!vault/songs/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
