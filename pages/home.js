@@ -1,12 +1,24 @@
 // import { update } from '../js/update.js';
 import { icons } from '../js/icons.js';
 import { mini_card, song_card } from '../js/components.js';
-import { songs as getSongs } from '../api/songs.js';
+import { getSongs, updateSongs } from '../api/songs.js';
+import { update } from '../js/update.js';
 
 export function home() {
     const header = function() {
         let date = new Date();
         const time = () => {return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;};
+
+        const msUntilNextMinute = (60 - new Date().getSeconds()) * 1000 - new Date().getMilliseconds();
+
+        setTimeout(() => {
+            update(() => {
+                const timeEl = document.querySelector('.header-timer--time');
+                if (!timeEl) return;
+                const now = new Date();
+                timeEl.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            }, 60000);  // ← every 60 seconds after the first sync
+        }, msUntilNextMinute);
 
         return (
         `<div class="header">
@@ -62,7 +74,7 @@ export function home() {
         let songcards = "";
         
         for (let i = 0; i < songs.length; i++) {
-            songcards += `${song_card("https://t2.genius.com/unsafe/344x344/https%3A%2F%2Fimages.genius.com%2Fce61c1b2664c5952984e30f9b59f1346.1000x1000x1.png", songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
+            songcards += `${song_card(songs[i].id, "https://t2.genius.com/unsafe/344x344/https%3A%2F%2Fimages.genius.com%2Fce61c1b2664c5952984e30f9b59f1346.1000x1000x1.png", songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
         }
 
         setTimeout(() => {
@@ -108,6 +120,42 @@ export function home() {
         }, 100);
 
         document.addEventListener('icons:refresh', () => {icons();});
+
+        setTimeout(() => {
+            const container = document.querySelector('.top-songs-section--content');
+            if (!container) return;
+        
+            // Capture state before click
+            container.addEventListener('mousedown', (e) => {
+                const card = e.target.closest('.song_card');
+                if (!card) return;
+                const isActive = card.classList.contains('playing') || card.classList.contains('paused');
+                container.dataset.wasActive = isActive ? 'true' : 'false';
+            });
+        
+            // Handle play increment
+            container.addEventListener('click', async (e) => {
+                const card = e.target.closest('.song_card');
+                if (!card) return;
+        
+                // Skip if card was already playing or paused
+                if (container.dataset.wasActive === 'true') return;
+        
+                const id = parseInt(card.dataset.id);
+                const currentPlays = parseInt(card.dataset.plays);
+                const newPlays = currentPlays + 1;
+        
+                card.dataset.plays = newPlays;
+                const playsSpan = card.querySelector('.song_card--controls--total-plays');
+                if (playsSpan) playsSpan.textContent = `${newPlays} plays`;
+        
+                try {
+                    await updateSongs(id, newPlays);
+                } catch (err) {
+                    console.error('Failed to save play count:', err);
+                }
+            });
+        }, 100);
 
         return (
         `<div class="top-songs-section">

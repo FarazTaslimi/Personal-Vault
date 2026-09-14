@@ -4,7 +4,6 @@ const path = require('path');
 
 const PORT = 3000;
 
-// MIME types for common files
 const mimeTypes = {
     '.html': 'text/html',
     '.css': 'text/css',
@@ -22,23 +21,57 @@ const mimeTypes = {
 };
 
 const server = http.createServer((req, res) => {
-    // Default to index.html for root
     let urlPath = decodeURIComponent(req.url);
     if (urlPath === '/' || urlPath === '') {
         urlPath = '/index.html';
     }
 
+    // ============================================================
+    // 🔥 API ROUTES — must come BEFORE file reading
+    // ============================================================
+    if (urlPath === '/api/updateSongs' && req.method === 'POST') {
+        let body = '';
+
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const { id, plays } = JSON.parse(body);
+                const vaultPath = path.join(__dirname, 'data', 'vault.json');
+
+                const vault = JSON.parse(fs.readFileSync(vaultPath, 'utf-8'));
+
+                const song = vault.songs.find(s => s.id === id);
+                if (!song) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Song not found' }));
+                    return;
+                }
+
+                song.plays = plays;
+                fs.writeFileSync(vaultPath, JSON.stringify(vault, null, 2));
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true, id, plays }));
+            } catch (err) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;   // ← important: stop here, don't fall through
+    }
+
+    // ============================================================
+    // Static file serving
+    // ============================================================
     const filePath = path.join(__dirname, urlPath);
     const normalizedPath = path.normalize(filePath);
 
-    // Security: prevent directory traversal
     if (!normalizedPath.startsWith(__dirname)) {
         res.writeHead(403);
         res.end('Forbidden');
         return;
     }
 
-    // Check if file exists
     fs.readFile(normalizedPath, (err, data) => {
         if (err) {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -57,4 +90,5 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
     console.log(`📁 Serving files from: ${__dirname}`);
+    console.log(`🔌 API: POST /api/updateSongs`);
 });

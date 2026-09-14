@@ -3,7 +3,7 @@ loadCSS("/components/song-card.css");
 
 let listenerAttached = false;
 
-export function song_card(cover, title, artist, rank, plays) {
+export function song_card(id, cover, title, artist, rank, plays) {
     if (!listenerAttached) {
         listenerAttached = true;
 
@@ -43,7 +43,7 @@ export function song_card(cover, title, artist, rank, plays) {
     }
 
     return (
-    `<div class="song_card">
+    `<div class="song_card" data-id="${id}" data-plays="${plays}">
         <div class="song_card--cover">
             <span class="song_card--cover--rank">#${rank}</span>
             <img class="song_card--cover-img" src="${cover}">
