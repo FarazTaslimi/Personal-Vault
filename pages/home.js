@@ -125,11 +125,13 @@ export function home() {
             const container = document.querySelector('.top-songs-section--content');
             if (!container) return;
         
-            // Capture state before click
+            // Capture state before click toggles the card
             container.addEventListener('mousedown', (e) => {
                 const card = e.target.closest('.song_card');
                 if (!card) return;
-                const isActive = card.classList.contains('playing') || card.classList.contains('paused');
+                const isActive =
+                    card.classList.contains('playing') ||
+                    card.classList.contains('paused');
                 container.dataset.wasActive = isActive ? 'true' : 'false';
             });
         
@@ -138,21 +140,31 @@ export function home() {
                 const card = e.target.closest('.song_card');
                 if (!card) return;
         
-                // Skip if card was already playing or paused
+                // Skip if card was already playing/paused
                 if (container.dataset.wasActive === 'true') return;
         
                 const id = parseInt(card.dataset.id);
                 const currentPlays = parseInt(card.dataset.plays);
                 const newPlays = currentPlays + 1;
         
-                card.dataset.plays = newPlays;
-                const playsSpan = card.querySelector('.song_card--controls--total-plays');
-                if (playsSpan) playsSpan.textContent = `${newPlays} plays`;
+                // 🔥 Immediate UI update via update()
+                update(() => {
+                    card.dataset.plays = newPlays;
+                    const span = card.querySelector('.song_card--controls--totalPlays');
+                    if (span) span.textContent = `${newPlays} plays`;
+                });
         
+                // Server write in background
                 try {
                     await updateSongs(id, newPlays);
                 } catch (err) {
                     console.error('Failed to save play count:', err);
+                    // Rollback using update() too
+                    update(() => {
+                        card.dataset.plays = currentPlays;
+                        const span = card.querySelector('.song_card--controls--total-plays');
+                        if (span) span.textContent = `${currentPlays} plays`;
+                    });
                 }
             });
         }, 100);

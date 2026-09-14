@@ -1,12 +1,15 @@
 let intervalId = null;
 
-export function update(callback, ms = 1000) {
-    if (intervalId) clearInterval(intervalId);
+export function update(callback, ms = 0) {
+    if (typeof callback !== 'function') return;
 
-    const tick = () => {
-        if (typeof callback === 'function') callback();
-    };
-
-    tick();
-    intervalId = setInterval(tick, ms);
+    if (ms > 0) {
+        // Scheduled repeating update (clock, greeting)
+        if (intervalId) clearInterval(intervalId);
+        callback();
+        intervalId = setInterval(callback, ms);
+    } else {
+        // Immediate one-shot update (play counts, UI changes)
+        callback();
+    }
 }
