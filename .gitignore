@@ -4,16 +4,19 @@ node_modules/
 # Real vault data (local only)
 data/vault.json
 
-# Audio files — keep folders, ignore contents
-vault/*
-!vault/.gitkeep
-!vault/songs/
-vault/songs/*
-!vault/songs/.gitkeep
+# Audio files (anywhere inside vault)
+vault/**/*.mp3
+vault/**/*.m4a
+vault/**/*.flac
+vault/**/*.wav
+vault/**/*.ogg
+vault/**/*.aac
 
-# Cover images — keep folder, ignore contents
-assets/covers/*
-!assets/covers/.gitkeep
+# Cover images
+assets/covers/*.jpg
+assets/covers/*.jpeg
+assets/covers/*.png
+assets/covers/*.webp
 
 # OS files
 .DS_Store
