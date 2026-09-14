@@ -1,0 +1,85 @@
+{
+  "songs": [
+    {
+      "id": 11,
+      "title": "Endless Summer",
+      "artist": "Alan Walker & Zak Abel",
+      "plays": 0,
+      "duration": 187,
+      "cover": "/assets/covers/11.jpeg",
+      "src": "/vault/songs/best songs/1_1 - Endless Summer - Alan Walker  Zak Abel (320).mp3"
+    },
+    {
+      "id": 12,
+      "title": "Scared to Be Lonely",
+      "artist": "Martin Garrix & Dua Lipa",
+      "plays": 0,
+      "duration": 221,
+      "cover": "/assets/covers/12.jpeg",
+      "src": "/vault/songs/best songs/1_1 - Scared to Be Lonely - Martin Garrix  Dua Lipa (320).mp3"
+    },
+    {
+      "id": 13,
+      "title": "Señorita",
+      "artist": "Shawn Mendes & Camila Cabello",
+      "plays": 0,
+      "duration": 191,
+      "cover": "/assets/covers/13.jpeg",
+      "src": "/vault/songs/best songs/1_1 - Señorita - Shawn Mendes  Camila Cabello (320).mp3"
+    },
+    {
+      "id": 14,
+      "title": "Skyfall",
+      "artist": "Adele",
+      "plays": 0,
+      "duration": 287,
+      "cover": "/assets/covers/14.jpeg",
+      "src": "/vault/songs/best songs/1_1 - Skyfall - Adele (320).mp3"
+    },
+    {
+      "id": 15,
+      "title": "Shape Of My Heart",
+      "artist": "Sting",
+      "plays": 0,
+      "duration": 279,
+      "cover": "/assets/covers/15.jpeg",
+      "src": "/vault/songs/best songs/1_10 - Shape Of My Heart - Sting (320).mp3"
+    },
+    {
+      "id": 16,
+      "title": "Chandelier (Piano Version)",
+      "artist": "Sia",
+      "plays": 0,
+      "duration": 242,
+      "cover": "/assets/covers/16.jpeg",
+      "src": "/vault/songs/best songs/1_13 - Chandelier (Piano Version) - Sia (320).mp3"
+    },
+    {
+      "id": 17,
+      "title": "Lucky You",
+      "artist": "Eminem & Joyner Lucas",
+      "plays": 0,
+      "duration": 245,
+      "cover": "/assets/covers/17.jpeg",
+      "src": "/vault/songs/best songs/1_3 - Lucky You - Eminem  Joyner Lucas (320).mp3"
+    },
+    {
+      "id": 18,
+      "title": "You Know My Name (From \"Casino Royale\" Soundtrack)",
+      "artist": "Chris Cornell",
+      "plays": 0,
+      "duration": 241,
+      "cover": "/assets/covers/18.jpeg",
+      "src": "/vault/songs/best songs/2_10_You_Know_My_Name_From_Casino_Royale_Soundtrack_Chris_Cornell.mp3"
+    },
+    {
+      "id": 19,
+      "title": "Kill You",
+      "artist": "Eminem",
+      "plays": 0,
+      "duration": 265,
+      "cover": "/assets/covers/19.jpeg",
+      "src": "/vault/songs/best songs/2_3 - Kill You - Eminem (320).mp3"
+    }
+  ]
+}

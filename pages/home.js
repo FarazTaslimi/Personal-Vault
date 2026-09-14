@@ -74,7 +74,7 @@ export function home() {
         let songcards = "";
         
         for (let i = 0; i < songs.length; i++) {
-            songcards += `${song_card(songs[i].id, "https://t2.genius.com/unsafe/344x344/https%3A%2F%2Fimages.genius.com%2Fce61c1b2664c5952984e30f9b59f1346.1000x1000x1.png", songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
+            songcards += `${song_card(songs[i].id, songs[i].cover, songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
         }
 
         setTimeout(() => {

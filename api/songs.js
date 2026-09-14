@@ -6,27 +6,21 @@ const DATA_URL = isLocal
     ? '/data/vault.json'
     : '/data/vault.example.json';
 
-let cachedData = null;
+// 🔥 Top-level await — loads once when the module imports
+const response = await fetch(DATA_URL);
+const vault = await response.json();
+const data = vault.songs;
 
-async function loadVault() {
-    if (cachedData) return cachedData;
-    const response = await fetch(DATA_URL);
-    cachedData = await response.json();
-    return cachedData;
-}
-
-export async function getSongs() {
-    const vault = await loadVault();
-    const songs = [...vault.songs];
-    return songs.sort((a, b) => b.plays - a.plays);
+export function getSongs() {
+    return [...data].sort((a, b) => b.plays - a.plays);
 }
 
 export async function updateSongs(id, plays) {
-    const response = await fetch('/api/updateSongs', {
+    const res = await fetch('/api/updateSongs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, plays })
     });
-    if (!response.ok) throw new Error('Failed to update play count');
-    return response.json();
+    if (!res.ok) throw new Error('Failed to update play count');
+    return res.json();
 }
