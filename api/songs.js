@@ -1,13 +1,5 @@
-const isLocal =
-    window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1';
-
-const DATA_URL = isLocal
-    ? '/data/vault.json'
-    : '/data/vault.example.json';
-
-// 🔥 Top-level await — loads once when the module imports
-const response = await fetch(DATA_URL);
+// Load vault data once when the module imports
+const response = await fetch('/data/vault.json');
 const vault = await response.json();
 const data = vault.songs;
 
