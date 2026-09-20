@@ -44,12 +44,18 @@
 .song_card--info--title {
     font-size: 1.75rem;
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .song_card--info--artist {
     font-size: 1.5rem;
     color: gray;
     font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .song_card--controls {

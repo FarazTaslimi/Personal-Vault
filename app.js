@@ -5,29 +5,44 @@ const app = document.getElementById('app');
 // 1. Render the app
 app.innerHTML = home();
 
+// CSS background images to preload (add your own here)
+const BACKGROUND_IMAGES = [
+    './assets/images/banner.png',
+];
+
 // 2. Wait for everything to be ready
 async function waitForReady() {
-    // Fonts (this usually waits for CSS too)
+    // Fonts (usually covers CSS too)
     await document.fonts.ready;
 
-    // Images
+    // <img> tags
     const images = [...document.querySelectorAll('img')];
     await Promise.all(
         images.map(img => {
             if (img.complete) return Promise.resolve();
             return new Promise(resolve => {
                 img.onload = resolve;
-                img.onerror = resolve;   // don't block on broken images
+                img.onerror = resolve;
             });
         })
     );
 
-    // Two frames — one to process DOM, one to paint
+    // CSS background images
+    await Promise.all(
+        BACKGROUND_IMAGES.map(src => new Promise(resolve => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = resolve;
+            img.src = src;
+        }))
+    );
+
+    // Two frames — process + paint
     await new Promise(r => requestAnimationFrame(r));
     await new Promise(r => requestAnimationFrame(r));
 }
 
-// 3. Safety net — never wait more than 5 seconds
+// 3. Safety net — never wait more than 10 seconds
 const MAX_WAIT = 10000;
 const timeout = new Promise(r => setTimeout(r, MAX_WAIT));
 
