@@ -93,20 +93,11 @@ div.header ~ div {
     position: relative;
     border-top: 2px solid rgb(255, 0, 255);
     border-bottom: 2px solid rgb(255, 0, 255);
-}
-
-.hero--background {
-    height: 100%;
-    width: 90%;
-    filter:
-        brightness(0.75)
-        contrast(1.25)
-        saturate(1.4)
-        hue-rotate(-15deg)
-        brightness(0.95);
-    position: absolute;
-    right: 0;
-    /* top: 0; */
+    background-image: url('./assets/images/banner.png');
+    background-repeat: no-repeat;
+    background-position: right center;
+    /* background-attachment: fixed; */
+    background-size: cover;
 }
 
 .hero-main {

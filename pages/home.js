@@ -49,8 +49,6 @@ export function home() {
 
         return (
         `<div class="hero">
-            <img src="./assets/images/banner.png" class="hero--background">
-
             <div class="hero-main">
                 <div class="hero-main--personal-information">
                     <span class="hero-main--personal-information--greeting-mesage">

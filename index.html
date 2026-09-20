@@ -6,8 +6,81 @@
     <title>Personal Vault</title>
     <link rel="stylesheet" href="globals.css">
 </head>
-<body>
-    <div id="app"></div>
+<body style="background: linear-gradient(to right, #000000 0%, #000000 10%, #120a20 100%);">
+    
+<div id="loader">
+    <div class="loaderBars"></div>
+    <div class="loaderBars end"></div>
+    <div class="loaderBars"></div>
+    <div class="loaderBars end"></div>
+    <div class="loaderBars"></div>
+    <div class="loaderBars end"></div>
+</div>
+<style>
+    #loader {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        height: 40px;
+        position: fixed;
+        bottom: 50%;
+        right: 50%;
+        z-index: 1000;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .loader-hidden {
+        opacity: 0;
+    }
+
+    .loaderBars {
+        width: 10px;
+        height: 10px;
+        background-color: #7c5cfc;
+        border-radius: 2px;
+        box-shadow: 0 0 6px #7c5cfc, 0 0 12px #7c5cfc;
+    }
+
+    .loaderBars:not(.end) {
+        transform-origin: top;
+        animation: animationStart 2s infinite ease-in-out;
+    }
+
+    .end {
+        align-self: flex-end;
+        transform-origin: bottom;
+        animation: animationEnd 2s infinite ease-in-out;
+    }
+
+    @keyframes animationStart {
+        25% { transform: scaleY(4); }
+        50% { transform: translateY(30px) scaleY(1); }
+        75% { transform: scaleY(4); }
+    }
+
+    @keyframes animationEnd {
+        25% { transform: scaleY(4); }
+        50% { transform: translateY(-30px) scaleY(1); }
+        75% { transform: scaleY(4); }
+    }
+
+    .loaderBars:nth-child(1) { animation-delay: 0s; }
+    .loaderBars:nth-child(2) { animation-delay: 0.1s; }
+    .loaderBars:nth-child(3) { animation-delay: 0.2s; }
+    .loaderBars:nth-child(4) { animation-delay: 0.3s; }
+    .loaderBars:nth-child(5) { animation-delay: 0.4s; }
+    .loaderBars:nth-child(6) { animation-delay: 0.5s; }
+
+    .app-hidden {
+        opacity: 0;
+    }
+
+    .app-ready {
+        opacity: 1;
+    }
+</style>
+
+    <div id="app" class="app-hidden"></div>
     <script src="app.js" type="module"></script>
 </body>
 </html>
