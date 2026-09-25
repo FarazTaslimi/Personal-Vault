@@ -14,5 +14,10 @@ export async function updateSongs(id, plays) {
         body: JSON.stringify({ id, plays })
     });
     if (!res.ok) throw new Error('Failed to update play count');
+
+    // Update in-memory data so the UI stays in sync
+    const song = data.find(s => s.id === id);
+    if (song) song.plays = plays;
+
     return res.json();
 }

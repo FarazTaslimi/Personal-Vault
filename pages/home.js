@@ -2,6 +2,7 @@
 import { icons } from '../js/icons.js';
 import { mini_card, song_card } from '../js/components.js';
 import { getSongs, updateSongs } from '../api/songs.js';
+import { updateAllSongCards, updateAllCardState, toggleSongState, getCurrentSongState } from '../components/song-card.js';
 import { update } from '../js/update.js';
 
 export function home() {
@@ -17,7 +18,7 @@ export function home() {
                 if (!timeEl) return;
                 const now = new Date();
                 timeEl.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-            }, 60000);  // ← every 60 seconds after the first sync
+            }, 60000);
         }, msUntilNextMinute);
 
         return (
@@ -71,7 +72,7 @@ export function home() {
         const songs = getSongs();
         let songcards = "";
         
-        for (let i = 0; i < songs.length; i++) {
+        for (let i = 0; i < 10 && i < songs.length; i++) {
             songcards += `${song_card(songs[i].id, songs[i].cover, songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
         }
 
@@ -119,51 +120,133 @@ export function home() {
 
         document.addEventListener('icons:refresh', () => {icons();});
 
+        // ---- Main section click handler ----
         setTimeout(() => {
             const container = document.querySelector('.top-songs-section--content');
             if (!container) return;
-        
-            // Capture state before click toggles the card
-            container.addEventListener('mousedown', (e) => {
-                const card = e.target.closest('.song_card');
-                if (!card) return;
-                const isActive =
-                    card.classList.contains('playing') ||
-                    card.classList.contains('paused');
-                container.dataset.wasActive = isActive ? 'true' : 'false';
-            });
-        
-            // Handle play increment
+
             container.addEventListener('click', async (e) => {
                 const card = e.target.closest('.song_card');
                 if (!card) return;
-        
-                // Skip if card was already playing/paused
-                if (container.dataset.wasActive === 'true') return;
-        
+
                 const id = parseInt(card.dataset.id);
+
+                // Check state BEFORE toggling
+                const before = getCurrentSongState();
+                const wasActive = before.id === id && (before.state === 'playing' || before.state === 'paused');
+
+                // Toggle state + update all cards
+                toggleSongState(id);
+                updateAllCardState();
+
+                // If pausing → skip play count
+                if (wasActive) return;
+
+                // Otherwise → increment plays
                 const currentPlays = parseInt(card.dataset.plays);
                 const newPlays = currentPlays + 1;
-        
-                // 🔥 Immediate UI update via update()
+
                 update(() => {
-                    card.dataset.plays = newPlays;
-                    const span = card.querySelector('.song_card--controls--totalPlays');
-                    if (span) span.textContent = `${newPlays} plays`;
+                    updateAllSongCards(id, newPlays);
                 });
-        
-                // Server write in background
+
                 try {
                     await updateSongs(id, newPlays);
                 } catch (err) {
                     console.error('Failed to save play count:', err);
-                    // Rollback using update() too
                     update(() => {
-                        card.dataset.plays = currentPlays;
-                        const span = card.querySelector('.song_card--controls--total-plays');
-                        if (span) span.textContent = `${currentPlays} plays`;
+                        updateAllSongCards(id, currentPlays);
                     });
                 }
+            });
+        }, 100);
+
+        // ---- Show All button + popup ----
+        setTimeout(() => {
+            const showAll_btn = document.querySelector('.top-songs-section--header--nav--show_all_btn');
+            if (!showAll_btn) return;
+
+            const popup = document.createElement('div');
+            popup.className = 'section-popup-backdrop';
+
+            showAll_btn.addEventListener('click', () => {
+                let allSongcards = "";
+                for (let i = 0; i < songs.length; i++) {
+                    allSongcards += `${song_card(songs[i].id, songs[i].cover, songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
+                }
+
+                popup.innerHTML = 
+                `<div class="section-popup">
+                    <div class="section-popup--header">
+                        <i data-lucide="x" class="section-popup--close_btn"></i>
+                    </div>
+                    <div class="section-popup--content">
+                        ${allSongcards}
+                    </div>
+                 </div>`;
+                document.body.appendChild(popup);
+
+                // Render icons
+                icons();
+
+                // 🔥 Apply current state to popup cards
+                updateAllCardState();
+
+                // ---- Popup content click handler ----
+                setTimeout(() => {
+                    const container = document.querySelector('.section-popup--content');
+                    if (!container) return;
+
+                    container.addEventListener('click', async (e) => {
+                        const card = e.target.closest('.song_card');
+                        if (!card) return;
+
+                        const id = parseInt(card.dataset.id);
+
+                        // Check state BEFORE toggling
+                        const before = getCurrentSongState();
+                        const wasActive = before.id === id && (before.state === 'playing' || before.state === 'paused');
+
+                        // Toggle state + update all cards
+                        toggleSongState(id);
+                        updateAllCardState();
+
+                        // If pausing → skip play count
+                        if (wasActive) return;
+
+                        // Otherwise → increment plays
+                        const currentPlays = parseInt(card.dataset.plays);
+                        const newPlays = currentPlays + 1;
+
+                        update(() => {
+                            updateAllSongCards(id, newPlays);
+                        });
+
+                        try {
+                            await updateSongs(id, newPlays);
+                        } catch (err) {
+                            console.error('Failed to save play count:', err);
+                            update(() => {
+                                updateAllSongCards(id, currentPlays);
+                            });
+                        }
+                    });
+                }, 0);
+
+                // ---- Close button + backdrop click ----
+                setTimeout(() => {
+                    const backdrop = document.querySelector('.section-popup-backdrop');
+                    if (!backdrop) return;
+
+                    backdrop.addEventListener('click', (e) => {
+                        const clickedCloseBtn = e.target.closest('.section-popup--close_btn');
+                        const clickedBackdrop = e.target === backdrop;
+                    
+                        if (clickedCloseBtn || clickedBackdrop) {
+                            backdrop.remove();
+                        }
+                    });
+                }, 10);
             });
         }, 100);
 
@@ -172,6 +255,7 @@ export function home() {
             <div class="top-songs-section--header">
                 <span class="section--title">top songs</span>
                 <div class="top-songs-section--header--nav">
+                    <span class="top-songs-section--header--nav--show_all_btn">Show All</span>
                     <i data-lucide="chevron-left" class="top-songs-section--header--nav--btn" id="top-songs-section--header--nav--btn_left"></i>
                     <i data-lucide="chevron-right" class="top-songs-section--header--nav--btn" id="top-songs-section--header--nav--btn_right"></i>
                 </div>

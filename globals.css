@@ -273,3 +273,75 @@ div.header ~ div {
 .top-songs-section--content::-webkit-scrollbar {
     display: none;                 /* Chrome/Safari */
 }
+
+.top-songs-section--header--nav--show_all_btn {
+    font-size: 1.6rem;
+    color: var(--primary);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.top-songs-section--header--nav--show_all_btn:active {
+    opacity: 0.8;
+}
+
+.section-popup-backdrop {
+    width: 100dvw;
+    height: 100dvh;
+    position: fixed;
+    z-index: 1000;
+    background-color: rgba(128, 128, 128, 0.1);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.section-popup {
+    width: 75%;
+    height: 80%;
+    background: var(--bg--dark);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+    /* gap: 24px; */
+}
+
+.section-popup--header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 32px;
+}
+
+.section-popup--close_btn {
+    width: 4rem !important;
+    height: 4rem !important;
+    cursor: pointer;
+}
+
+.section-popup--close_btn:hover {
+    stroke: #ae00ff !important;
+}
+
+.section-popup--content {
+    display: flex;
+}
+
+.section-popup--content {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 24px 32px;
+}
+
+.section-popup--content::-webkit-scrollbar {
+    display: none;
+}
