@@ -1,4 +1,5 @@
 import { loadCSS } from '../js/loadCSS.js';
+import { subscribe } from '../api/songs.js';
 loadCSS("/components/song-card.css");
 
 // ============================================================
@@ -94,3 +95,13 @@ export function updateAllCardState() {
     // 4. Re-render Lucide icons
     document.dispatchEvent(new CustomEvent('icons:refresh'));
 }
+
+// ============================================================
+// 🎧 ENGINE SYNC — reset card state when a song ends
+// ============================================================
+subscribe(state => {
+    if (state.ended) {
+        clearSongState();
+        updateAllCardState();
+    }
+});

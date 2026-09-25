@@ -1,7 +1,7 @@
 // import { update } from '../js/update.js';
 import { icons } from '../js/icons.js';
 import { mini_card, song_card } from '../js/components.js';
-import { getSongs, updateSongs } from '../api/songs.js';
+import { getSongs, updateSongs, playSong } from '../api/songs.js';
 import { updateAllSongCards, updateAllCardState, toggleSongState, getCurrentSongState } from '../components/song-card.js';
 import { update } from '../js/update.js';
 
@@ -131,6 +131,8 @@ export function home() {
 
                 const id = parseInt(card.dataset.id);
 
+                playSong(id);
+
                 // Check state BEFORE toggling
                 const before = getCurrentSongState();
                 const wasActive = before.id === id && (before.state === 'playing' || before.state === 'paused');
@@ -202,6 +204,7 @@ export function home() {
                         if (!card) return;
 
                         const id = parseInt(card.dataset.id);
+                        playSong(id);
 
                         // Check state BEFORE toggling
                         const before = getCurrentSongState();
