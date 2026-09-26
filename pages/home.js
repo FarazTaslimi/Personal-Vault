@@ -1,15 +1,39 @@
-// import { update } from '../js/update.js';
+// ============================================================
+// 🏠 HOME PAGE
+// ============================================================
+// Assembles the full home view from three sections:
+//   1. header()          — title + live clock
+//   2. hero()            — greeting + personal info + poem
+//   3. topSongsSection() — horizontal song cards + Show All popup
+//
+// Returns a single HTML string that gets injected into #app.
+
 import { icons } from '../js/icons.js';
 import { mini_card, song_card } from '../js/components.js';
 import { getSongs, updateSongs, playSong } from '../api/songs.js';
-import { updateAllSongCards, updateAllCardState, toggleSongState, getCurrentSongState } from '../components/song-card.js';
+import {
+    updateAllSongCards,
+    updateAllCardState,
+    toggleSongState,
+    getCurrentSongState
+} from '../components/song-card.js';
 import { update } from '../js/update.js';
+import { player } from '../components/player.js';
+
 
 export function home() {
+
+    // ============================================================
+    // 📌 HEADER — logo + live clock (updates once per minute)
+    // ============================================================
     const header = function() {
         let date = new Date();
-        const time = () => {return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;};
+        const time = () => {
+            return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+        };
 
+        // Delay until the next minute boundary so the clock flips
+        // exactly on time (e.g. 14:00, 14:01, 14:02…).
         const msUntilNextMinute = (60 - new Date().getSeconds()) * 1000 - new Date().getMilliseconds();
 
         setTimeout(() => {
@@ -35,15 +59,22 @@ export function home() {
         );
     };
 
+
+    // ============================================================
+    // 🦸 HERO — greeting + name + mini stat cards + poem
+    // ============================================================
     const hero = function() {
+
+        // Returns "morning" / "afternoon" / "evening" / "night"
+        // based on the current hour.
         const timeRange = () => {
             const hour = new Date().getHours();
             let time_range = "";
 
-            if (hour >= 5 && hour <= 11) {time_range = "morning";}
-            else if (hour >= 12 && hour <= 16) {time_range = "afternoon";}
-            else if (hour >= 17 && hour <= 21) {time_range = "evening";}
-            else if (hour >= 22 || hour <= 4) {time_range = "night";}
+            if (hour >= 5 && hour <= 11)       { time_range = "morning"; }
+            else if (hour >= 12 && hour <= 16) { time_range = "afternoon"; }
+            else if (hour >= 17 && hour <= 21) { time_range = "evening"; }
+            else if (hour >= 22 || hour <= 4)  { time_range = "night"; }
 
             return `${time_range}`;
         };
@@ -68,24 +99,36 @@ export function home() {
         );
     };
 
+
+    // ============================================================
+    // 🎵 TOP SONGS SECTION — horizontal cards + Show All popup
+    // ============================================================
     const topSongsSection = function() {
         const songs = getSongs();
         let songcards = "";
-        
+
+        // Build the first 10 song cards (or fewer if there aren't 10).
+        // The full list is only rendered when "Show All" is clicked.
         for (let i = 0; i < 10 && i < songs.length; i++) {
             songcards += `${song_card(songs[i].id, songs[i].cover, songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
         }
 
+
+        // --------------------------------------------------------
+        // ⬅️➡️ ARROW NAVIGATION — scroll the row left / right
+        // --------------------------------------------------------
+        // setTimeout(100) waits for the HTML returned by this function
+        // to actually be in the DOM before querying elements.
         setTimeout(() => {
             const container = document.querySelector('.top-songs-section--content');
-            const nav = document.querySelector('.top-songs-section--header--nav');
-            const leftBtn = document.getElementById('top-songs-section--header--nav--btn_left');
-            const rightBtn = document.getElementById('top-songs-section--header--nav--btn_right');
-        
+            const nav       = document.querySelector('.top-songs-section--header--nav');
+            const leftBtn   = document.getElementById('top-songs-section--header--nav--btn_left');
+            const rightBtn  = document.getElementById('top-songs-section--header--nav--btn_right');
+
             if (!container || !nav || !leftBtn || !rightBtn) return;
-        
+
             const scrollAmount = 524;
-        
+
             // Arrow clicks
             nav.addEventListener('click', (e) => {
                 if (e.target.closest('#top-songs-section--header--nav--btn_left')) {
@@ -94,33 +137,41 @@ export function home() {
                     container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
                 }
             });
-        
-            // Update disabled state
+
+            // Enable/disable arrows based on scroll position
             const updateArrows = () => {
                 const atStart = container.scrollLeft <= 0;
-                const atEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+                const atEnd   = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
                 leftBtn.classList.toggle('disabled', atStart);
                 rightBtn.classList.toggle('disabled', atEnd);
             };
-        
-            // Listen to scroll + size changes
+
+            // React to scroll + resize
             container.addEventListener('scroll', updateArrows);
             window.addEventListener('resize', updateArrows);
-        
-            // 🔥 Re-run when container size changes (CSS load, content change)
+
+            // 🔥 ResizeObserver catches when the container itself resizes
+            // (fonts loading, images loading, layout shifts, etc.)
             const ro = new ResizeObserver(updateArrows);
             ro.observe(container);
-        
-            // Run multiple times to catch late layout
+
+            // Run multiple times to catch late layout changes
             updateArrows();
             requestAnimationFrame(updateArrows);
             setTimeout(updateArrows, 100);
             setTimeout(updateArrows, 500);
         }, 100);
 
-        document.addEventListener('icons:refresh', () => {icons();});
 
-        // ---- Main section click handler ----
+        // --------------------------------------------------------
+        // 🔄 ICON REFRESH — re-render lucide icons on demand
+        // --------------------------------------------------------
+        document.addEventListener('icons:refresh', () => { icons(); });
+
+
+        // --------------------------------------------------------
+        // 🖱️ MAIN SECTION CLICK HANDLER — click a song card
+        // --------------------------------------------------------
         setTimeout(() => {
             const container = document.querySelector('.top-songs-section--content');
             if (!container) return;
@@ -131,22 +182,29 @@ export function home() {
 
                 const id = parseInt(card.dataset.id);
 
+                // Insert the player component into the page on first click.
+                // The guard prevents duplicate players on repeated clicks.
+                if (!document.querySelector('.player')) {
+                    document.body.insertAdjacentHTML('beforeend', player());
+                }
+
+                // Hand the id to the audio engine
                 playSong(id);
 
-                // Check state BEFORE toggling
-                const before = getCurrentSongState();
+                // Capture state BEFORE toggling (needed for the wasActive check)
+                const before    = getCurrentSongState();
                 const wasActive = before.id === id && (before.state === 'playing' || before.state === 'paused');
 
-                // Toggle state + update all cards
+                // Toggle state + update all cards (main + popup)
                 toggleSongState(id);
                 updateAllCardState();
 
-                // If pausing → skip play count
+                // If the user was pausing/resuming the same song → don't count it
                 if (wasActive) return;
 
-                // Otherwise → increment plays
+                // Otherwise → this is a new play, bump the count
                 const currentPlays = parseInt(card.dataset.plays);
-                const newPlays = currentPlays + 1;
+                const newPlays     = currentPlays + 1;
 
                 update(() => {
                     updateAllSongCards(id, newPlays);
@@ -156,6 +214,7 @@ export function home() {
                     await updateSongs(id, newPlays);
                 } catch (err) {
                     console.error('Failed to save play count:', err);
+                    // Roll back the optimistic UI update on failure
                     update(() => {
                         updateAllSongCards(id, currentPlays);
                     });
@@ -163,21 +222,28 @@ export function home() {
             });
         }, 100);
 
-        // ---- Show All button + popup ----
+
+        // --------------------------------------------------------
+        // 📂 SHOW ALL — popup with every song
+        // --------------------------------------------------------
         setTimeout(() => {
             const showAll_btn = document.querySelector('.top-songs-section--header--nav--show_all_btn');
             if (!showAll_btn) return;
 
+            // One popup element reused across openings. It's appended to
+            // <body> on click and removed on close.
             const popup = document.createElement('div');
             popup.className = 'section-popup-backdrop';
 
             showAll_btn.addEventListener('click', () => {
+
+                // Build all cards fresh each time the popup opens
                 let allSongcards = "";
                 for (let i = 0; i < songs.length; i++) {
                     allSongcards += `${song_card(songs[i].id, songs[i].cover, songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
                 }
 
-                popup.innerHTML = 
+                popup.innerHTML =
                 `<div class="section-popup">
                     <div class="section-popup--header">
                         <i data-lucide="x" class="section-popup--close_btn"></i>
@@ -188,13 +254,14 @@ export function home() {
                  </div>`;
                 document.body.appendChild(popup);
 
-                // Render icons
+                // Render lucide icons inside the popup
                 icons();
 
-                // 🔥 Apply current state to popup cards
+                // Apply current playing state to popup cards
                 updateAllCardState();
 
-                // ---- Popup content click handler ----
+
+                // ---- Popup card clicks ----
                 setTimeout(() => {
                     const container = document.querySelector('.section-popup--content');
                     if (!container) return;
@@ -204,22 +271,25 @@ export function home() {
                         if (!card) return;
 
                         const id = parseInt(card.dataset.id);
+
+                        // Same guard as main section — insert player if missing
+                        if (!document.querySelector('.player')) {
+                            document.body.insertAdjacentHTML('beforeend', player());
+                        }
+
                         playSong(id);
 
-                        // Check state BEFORE toggling
-                        const before = getCurrentSongState();
+                        const before    = getCurrentSongState();
                         const wasActive = before.id === id && (before.state === 'playing' || before.state === 'paused');
 
-                        // Toggle state + update all cards
                         toggleSongState(id);
                         updateAllCardState();
 
-                        // If pausing → skip play count
+                        // Pause/resume → don't count as a new play
                         if (wasActive) return;
 
-                        // Otherwise → increment plays
                         const currentPlays = parseInt(card.dataset.plays);
-                        const newPlays = currentPlays + 1;
+                        const newPlays     = currentPlays + 1;
 
                         update(() => {
                             updateAllSongCards(id, newPlays);
@@ -236,7 +306,8 @@ export function home() {
                     });
                 }, 0);
 
-                // ---- Close button + backdrop click ----
+
+                // ---- Popup close — click the X button OR the backdrop ----
                 setTimeout(() => {
                     const backdrop = document.querySelector('.section-popup-backdrop');
                     if (!backdrop) return;
@@ -244,7 +315,7 @@ export function home() {
                     backdrop.addEventListener('click', (e) => {
                         const clickedCloseBtn = e.target.closest('.section-popup--close_btn');
                         const clickedBackdrop = e.target === backdrop;
-                    
+
                         if (clickedCloseBtn || clickedBackdrop) {
                             backdrop.remove();
                         }
@@ -253,6 +324,10 @@ export function home() {
             });
         }, 100);
 
+
+        // --------------------------------------------------------
+        // 📄 SECTION HTML
+        // --------------------------------------------------------
         return (
         `<div class="top-songs-section">
             <div class="top-songs-section--header">
@@ -270,6 +345,10 @@ export function home() {
         );
     };
 
+
+    // ============================================================
+    // 🚀 INIT — render icons, then return the full page HTML
+    // ============================================================
     icons();
     return `${header()}${hero()}${topSongsSection()}`;
 }
