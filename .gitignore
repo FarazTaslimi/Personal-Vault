@@ -14,16 +14,23 @@ data/*
 # ============================================================
 # 🔒 vault/ — keep full folder tree, ignore all contents
 # ============================================================
-# vault/**        → ignore everything recursively
-# !vault/**/      → but re-include every folder (so structure survives)
-# !vault/**/.gitkeep → and keep the .gitkeep placeholders
+# vault/**            → ignore everything recursively
+# !vault/**/          → but re-include every folder (structure survives)
+# !vault/**/.gitkeep  → and keep the .gitkeep placeholders
 vault/**
 !vault/**/
 !vault/**/.gitkeep
 
 
 # ============================================================
-# ⚙️ Phoenix Code — auto-generated
+# 🖼️ assets/covers/ — keep folder, ignore contents
+# ============================================================
+assets/covers/*
+!assets/covers/.gitkeep
+
+
+# ============================================================
+# ⚙️ Phoenix Code — auto-generated, machine-specific
 # ============================================================
 jsconfig.json
 .phcode.json
