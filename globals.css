@@ -1,3 +1,7 @@
+/* ============================================================
+   🔤 FONT FACES — Inter (normal + italic)
+   ============================================================ */
+
 @font-face {
     font-family: Inter;
     src: url('assets/fonts/Inter-VariableFont_opsz\,wght.ttf') format(truetype);
@@ -10,6 +14,11 @@
     font-style: italic;
 }
 
+
+/* ============================================================
+   🧹 RESET — universal box-sizing + zeroed spacing
+   ============================================================ */
+
 * {
     margin: 0;
     padding: 0;
@@ -18,6 +27,13 @@
     color: var(--text-light);
 }
 
+
+/* ============================================================
+   🎨 ROOT VARIABLES
+   ============================================================ */
+/* 62.5% font-size makes 1rem = 10px, so rem values become
+   mentally easy (2.2rem = 22px, etc.). */
+
 :root {
     font-size: 62.5%;
 
@@ -25,6 +41,11 @@
     --text-light: #fff;
     --bg--dark: linear-gradient(to right, #000000 0%, #000000 10%, #120a20 100%);
 }
+
+
+/* ============================================================
+   📱 APP SHELL — full-viewport scrolling container
+   ============================================================ */
 
 #app {
     width: 100dvw;
@@ -35,15 +56,29 @@
     overflow-x: hidden;
 }
 
+/* Every direct sibling AFTER .header gets the dark gradient background.
+   (Header has its own gradient rule.) */
 div.header ~ div {
     background-color: var(--bg--dark);
 }
+
+
+/* ============================================================
+   🎭 UTILITY — filled lucide icons (no stroke)
+   ============================================================ */
+/* Used when an icon should look like a solid shape rather than
+   an outline. Lucide SVGs default to stroke-only; this swaps them. */
 
 .filled-icon {
     fill: currentColor;
     stroke: none;
     height: auto;
 }
+
+
+/* ============================================================
+   📌 HEADER — logo + live clock
+   ============================================================ */
 
 .header {
     width: 100%;
@@ -61,9 +96,11 @@ div.header ~ div {
     gap: 16px;
 }
 
+/* The glowing purple circle marker next to "Personal Vault" */
 .header-title--marker {
     fill: var(--primary);
     width: 3rem;
+    /* 4 stacked drop-shadows = strong even glow in all directions */
     filter: drop-shadow(4px 2px 40px #ae00ff) drop-shadow(-4px 2px 40px #ae00ff) drop-shadow(-4px -2px 40px #ae00ff) drop-shadow(4px -2px 40px #ae00ff);
 }
 
@@ -88,6 +125,11 @@ div.header ~ div {
     color: gray;
 }
 
+
+/* ============================================================
+   🦸 HERO — banner with name + greeting + poem
+   ============================================================ */
+
 .hero {
     height: 500px;
     position: relative;
@@ -100,6 +142,8 @@ div.header ~ div {
     background-size: cover;
 }
 
+/* Overlay that fades from dark (left) → transparent (right).
+   pointer-events: none so clicks pass through to children. */
 .hero-main {
     position: relative;
     width: 100%;
@@ -118,6 +162,7 @@ div.header ~ div {
     justify-content: start;
 }
 
+/* Left column holding greeting + name + jobs + mini cards */
 .hero-main--personal-information {
     background: linear-gradient(
     to right,
@@ -144,6 +189,7 @@ div.header ~ div {
     font-weight: 400;
 }
 
+/* Horizontal line next to the greeting — stretched wider with scaleX */
 .hero-main--personal-information--greeting-message--marker {
     width: 8rem !important;
     height: 3rem !important;
@@ -151,10 +197,12 @@ div.header ~ div {
     transform-origin: center;
 }
 
+/* The big glowing name */
 .hero-main--personal-information--name {
     font-size: 14rem;
     text-transform: uppercase;
     letter-spacing: 4px;
+    /* Massive multi-stop text-shadow = purple neon glow */
     text-shadow: 0 0 180px var(--primary), 0 0 150px var(--primary), 0 0 120px var(--primary), 0 0 100px var(--primary), 0 0 90px var(--primary), 0 0 80px var(--primary), 0 0 70px var(--primary), 0 0 60px var(--primary), 0 0 50px var(--primary), 0 0 30px var(--primary), 0 0 15px var(--primary), 0 0 10px var(--primary), 0 0 5px var(--primary);
 }
 
@@ -163,6 +211,7 @@ div.header ~ div {
     word-spacing: 16px;
 }
 
+/* Row of mini cards (Movies / Songs / Hours) */
 .hero-main--personal-information--quick_summary {
     display: flex;
     align-items: center;
@@ -171,6 +220,7 @@ div.header ~ div {
     padding: 32px 0;
 }
 
+/* Poem block in the top-right of the hero */
 .hero-poem {
     position: absolute;
     z-index: 20;
@@ -199,6 +249,8 @@ div.header ~ div {
     color: rgb(125, 125, 125);
 }
 
+/* Top border on the first light line, bottom border on the last
+   — frames the poem with two horizontal rules. */
 .hero-poem--content_light:first-child {
     border-top: 1px solid gray;
     padding-top: 16px;
@@ -208,6 +260,12 @@ div.header ~ div {
     border-bottom: 1px solid gray;
     padding-bottom: 16px;
 }
+
+
+/* ============================================================
+   🏷️ SECTION TITLE — shared across all sections
+   ============================================================ */
+/* "TOP SONGS" style heading with the purple left border. */
 
 .section--title {
     font-size: 2.2rem;
@@ -219,6 +277,11 @@ div.header ~ div {
     /* border-radius: 2px; */
     padding: 4px 16px;
 }
+
+
+/* ============================================================
+   🎵 TOP SONGS SECTION — header + horizontal card row
+   ============================================================ */
 
 .top-songs-section {
     background: var(--bg--dark);
@@ -241,6 +304,7 @@ div.header ~ div {
     gap: 16px;
 }
 
+/* Left/right chevrons for horizontal scrolling */
 .top-songs-section--header--nav--btn {
     filter: drop-shadow(0 0 10px red);
     cursor: pointer;
@@ -250,12 +314,14 @@ div.header ~ div {
     opacity: 0.5;
 }
 
+/* Applied by JS when scroll reaches an edge */
 .top-songs-section--header--nav--btn.disabled {
     opacity: 0.3;
     /* pointer-events: none; */
     cursor: not-allowed;
 }
 
+/* The horizontal scrolling row of song cards */
 .top-songs-section--content {
     display: flex;
     flex-direction: row;
@@ -263,17 +329,19 @@ div.header ~ div {
     overflow-x: auto;
     /* overflow-y: auto; */
     scroll-behavior: smooth;
-    scrollbar-width: none;
+    scrollbar-width: none;      /* Firefox: hide scrollbar */
     height: 340px;
     /* padding-top: 20px; */
     padding: 20px;
     margin-right: 20px;
 }
 
+/* Chrome/Safari: hide the scrollbar */
 .top-songs-section--content::-webkit-scrollbar {
-    display: none;                 /* Chrome/Safari */
+    display: none;
 }
 
+/* "Show All" text button */
 .top-songs-section--header--nav--show_all_btn {
     font-size: 1.6rem;
     color: var(--primary);
@@ -286,6 +354,12 @@ div.header ~ div {
     opacity: 0.8;
 }
 
+
+/* ============================================================
+   📂 SHOW ALL POPUP — fullscreen overlay + scrollable card grid
+   ============================================================ */
+
+/* Fullscreen backdrop that dims + blurs the page behind it */
 .section-popup-backdrop {
     width: 100dvw;
     height: 100dvh;
@@ -301,6 +375,7 @@ div.header ~ div {
     justify-content: center;
 }
 
+/* The centered dark panel */
 .section-popup {
     width: 75%;
     height: 80%;
@@ -312,6 +387,7 @@ div.header ~ div {
     /* gap: 24px; */
 }
 
+/* Header row with the close X on the right */
 .section-popup--header {
     display: flex;
     justify-content: flex-end;
@@ -328,6 +404,7 @@ div.header ~ div {
     stroke: #ae00ff !important;
 }
 
+/* Content area — Grid auto-fits as many 250px columns as will fit */
 .section-popup--content {
     display: flex;
 }
@@ -338,10 +415,11 @@ div.header ~ div {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 24px;
     overflow-y: auto;
-    scrollbar-width: none;
+    scrollbar-width: none;       /* Firefox: hide scrollbar */
     padding: 24px 32px;
 }
 
+/* Chrome/Safari: hide the scrollbar */
 .section-popup--content::-webkit-scrollbar {
     display: none;
 }
