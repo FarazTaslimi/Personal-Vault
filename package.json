@@ -1,0 +1,11 @@
+{
+  "name": "Personal-Vault",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "generate": "node generate.mjs"
+  },
+  "dependencies": {
+    "music-metadata": "^11.16.1"
+  }
+}
