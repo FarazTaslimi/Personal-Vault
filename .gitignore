@@ -1,0 +1,40 @@
+# ============================================================
+# 📦 Dependencies
+# ============================================================
+node_modules/
+
+
+# ============================================================
+# 🔒 data/ — keep folder, ignore contents
+# ============================================================
+data/*
+!data/.gitkeep
+
+
+# ============================================================
+# 🔒 vault/ — keep full folder tree, ignore all contents
+# ============================================================
+# vault/**        → ignore everything recursively
+# !vault/**/      → but re-include every folder (so structure survives)
+# !vault/**/.gitkeep → and keep the .gitkeep placeholders
+vault/**
+!vault/**/
+!vault/**/.gitkeep
+
+
+# ============================================================
+# ⚙️ Phoenix Code — auto-generated
+# ============================================================
+jsconfig.json
+.phcode.json
+
+
+# ============================================================
+# 🧹 OS junk + editor folders + temp files
+# ============================================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+*.tmp
