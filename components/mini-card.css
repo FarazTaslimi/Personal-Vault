@@ -1,18 +1,23 @@
+/* ============================================================
+   🎴 MINI CARD — small stat card (icon + count + label)
+   ============================================================ */
+
 .mini_card {
     border: 2px solid rgb(68, 0, 255);
     background-color: rgb(8, 1, 19);
     border-radius: 24px;
-    padding: 8px;
+    padding: 8px;              /* overridden below by the shorthand padding */
     display: inline-flex;
     align-items: center;
     gap: 24px;
-    padding: 16px 24px;
+    padding: 16px 24px;        /* final vertical/horizontal padding */
 }
 
 .mini_card--icon {
     stroke: var(--primary);
     width: 3rem !important;
     height: auto !important;
+    /* Double drop-shadow = stronger glow around the icon */
     filter: drop-shadow(0 0 10px purple) drop-shadow(0 0 10px purple);
 }
 
