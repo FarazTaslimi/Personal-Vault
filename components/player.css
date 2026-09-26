@@ -1,0 +1,317 @@
+/* ============================================================
+   🎧 PLAYER — main container
+   ============================================================ */
+/* Floating card at bottom-right. Also has a transition so the
+   minimize animation (scale down + fade) is smooth.
+   transform-origin: bottom right makes it shrink toward that corner. */
+
+.player {
+    width: 250px;
+    height: 250px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10000000;
+    border: 1px solid var(--primary);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+    transform-origin: bottom right;
+}
+
+
+/* ============================================================
+   🎛️ PLAYER MAIN — the semi-transparent overlay on the cover
+   ============================================================ */
+
+.player--main {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(128, 128, 128, 0.5);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Every icon inside the player is clickable */
+.player--main i,
+.player--main svg {
+    cursor: pointer;
+}
+
+/* Top third — empty, just shows the background cover */
+.player--main--FlexHidden {
+    flex: 1 1 33.3%;
+    border-top-right-radius: 12px;
+    border-top-left-radius: 12px;
+}
+
+/* Middle third — the controls (prev / play / next / repeat) */
+.player--main--controls {
+    flex: 1 1 33.3%;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Bottom third — the progress bar + timestamps */
+.player--main--progress {
+    flex: 1 1 33.3%;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+/* ============================================================
+   ▶️ CONTROLS — prev / play / next / repeat
+   ============================================================ */
+
+.controls_main {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.Previous_Next {
+    width: 4rem;
+    height: 4rem;
+}
+
+.Previous_Next:hover {
+    fill: purple;
+}
+
+.Toggle_PlayPause {
+    width: 3.6rem;
+    height: 3.6rem;
+}
+
+/* Purple circle behind the play/pause icon */
+.bg_control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    background-color: purple;
+    border-radius: 50%;
+    transition: transform 0.1s ease-in;
+}
+
+.bg_control:hover {
+    /* opacity: 0.88; */
+    transform: scale(1.075);
+}
+
+.Toggle_Repeat {
+    width: 3rem;
+    height: 3rem;
+    stroke: white;
+}
+
+
+/* ============================================================
+   📊 PROGRESS BAR — track, fill, thumb, timestamps
+   ============================================================ */
+
+.progress_bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 1000px;
+    background-color: whitesmoke;
+    border: 1px solid gray;
+    position: relative;
+}
+
+/* The purple fill — width is set by JS as playback progresses */
+.progress_bar--filled {
+    width: 1%;                  /* JS overrides this every frame */
+    background-color: purple;
+    border-radius: 1000px;
+    height: 100%;
+    position: relative;
+}
+
+/* The draggable circle at the tip of the fill */
+.progress_bar--thumb {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background-color: purple;
+    border: 2px solid white;
+    border-radius: 50%;
+    transform: translate(50%, -50%) scale(2.2);
+    box-shadow: 0 0 10px purple;
+    cursor: pointer;
+}
+
+.progress_bar--thumb:hover {
+    border: 1px solid white;
+}
+
+/* Timestamps row — elapsed on left, total on right */
+.duration {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.time_elapsed,
+.time_total {
+    font-size: 1.25rem;
+}
+
+
+/* ============================================================
+   🏷️ TOP BAR — title + minimize/close buttons
+   ============================================================ */
+/* Sits at the very top of the player, overlapping its border
+   so it visually merges with the card edge. */
+
+.player--bar {
+    position: absolute;
+    top: -1px;
+    width: calc(100% + 2px);
+    background-color: black;
+    padding: 4px 8px;
+    left: -1px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* gap: 8px; */
+    z-index: 100000000;
+}
+
+.player--bar_title {
+    font-size: 1.33rem;
+}
+
+.player--bar_buttons {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 8px;
+}
+
+.player--bar_buttons i,
+.player--bar_buttons svg {
+    width: 2rem;
+    height: 2rem;
+    cursor: pointer;
+}
+
+/* First button = minimize → green on hover */
+.player--bar_buttons i:first-child:hover,
+.player--bar_buttons svg:first-child:hover {
+    stroke: green;
+}
+
+/* Last button = close → red on hover */
+.player--bar_buttons i:last-child:hover,
+.player--bar_buttons svg:last-child:hover {
+    stroke: red;
+}
+
+
+/* ============================================================
+   🎤 ARTIST NAME — overlaid on the cover, truncated if too long
+   ============================================================ */
+
+.player_artist {
+    position: absolute;
+    top: 17%;
+    font-size: 2rem;
+    color: purple;
+    font-weight: bold;
+    text-shadow: 0 0 20px purple;
+
+    max-width: calc(100% - 16px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+
+/* ============================================================
+   🖐️ DRAGGING STATE — kill transitions while dragging
+   ============================================================ */
+/* Without this, the transition from .player would fight the drag,
+   making the player lag behind the cursor. */
+
+.player.player--dragging {
+    transition: none;
+}
+
+
+/* ============================================================
+   🪟 MINIMIZED STATE — player shrinks + fades out
+   ============================================================ */
+
+.player.player--minimized {
+    transform: scale(0.15);
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* ============================================================
+   🟣 MINI FLOATING BUTTON — appears when player is minimized
+   ============================================================ */
+
+.player-mini {
+    position: fixed;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: purple;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10000001;
+    box-shadow: 0 0 20px rgba(128, 0, 128, 0.7), 0 0 40px rgba(128, 0, 128, 0.4);
+    opacity: 0;
+    transform: scale(0);
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    right: 24px;
+    bottom: 24px;
+}
+
+/* Applied by JS when minimize is clicked */
+.player-mini.player-mini--visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+    transition-delay: 0.15s;   /* waits for player to shrink first */
+}
+
+.player-mini:hover {
+    transform: scale(1.08);
+}
+
+.player-mini svg {
+    width: 24px;
+    height: 24px;
+    stroke: white;
+    fill: white;
+}
