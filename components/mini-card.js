@@ -1,5 +1,13 @@
+// ============================================================
+// 🎴 MINI CARD — small stat card used in the hero section
+// ============================================================
+// Renders an icon + counter + title (e.g. "Movies / 42").
+// Used inside home.js to display summary stats under the user's name.
+
 import { loadCSS } from '../js/loadCSS.js';
-loadCSS("../components/mini-card.css");
+
+// Load the matching stylesheet the first time this module runs.
+loadCSS('../components/mini-card.css');
 
 export function mini_card(icon, name, count) {
     return (
