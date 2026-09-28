@@ -1,11 +1,12 @@
 {
-  "name": "Personal-Vault",
+  "name": "personal-vault",
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "generate": "node generate.mjs"
+    "generate": "node --env-file=.env generate.mjs"
   },
   "dependencies": {
+    "avbridge": "^2.13.0",
     "music-metadata": "^11.16.1"
   }
 }

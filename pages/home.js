@@ -8,25 +8,24 @@
 //
 // Returns a single HTML string that gets injected into #app.
 
-import { icons } from '../js/icons.js';
-import { mini_card, song_card } from '../js/components.js';
-import { getSongs, updateSongs, playSong } from '../api/songs.js';
+import { icons } from "../js/icons.js";
+import { mini_card, song_card, movie_card } from "../js/components.js";
+import { getSongs, updateSongs, playSong } from "../api/songs.js";
 import {
     updateAllSongCards,
     updateAllCardState,
     toggleSongState,
     getCurrentSongState
-} from '../components/song-card.js';
-import { update } from '../js/update.js';
-import { player } from '../components/player.js';
-
+} from "../components/song-card.js";
+import { getMovies, playMovie } from "../api/movies.js";
+import { update } from "../js/update.js";
+import { player } from "../components/player.js";
 
 export function home() {
-
     // ============================================================
     // 📌 HEADER — logo + live clock (updates once per minute)
     // ============================================================
-    const header = function() {
+    const header = function () {
         let date = new Date();
         const time = () => {
             return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
@@ -38,15 +37,14 @@ export function home() {
 
         setTimeout(() => {
             update(() => {
-                const timeEl = document.querySelector('.header-timer--time');
+                const timeEl = document.querySelector(".header-timer--time");
                 if (!timeEl) return;
                 const now = new Date();
-                timeEl.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                timeEl.textContent = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
             }, 60000);
         }, msUntilNextMinute);
 
-        return (
-        `<div class="header">
+        return `<div class="header">
             <div class="header-title">
                 <i data-lucide="circle" class="filled-icon header-title--marker"></i>
                 <h1 class="header-title--text">Personal Vault</h1>
@@ -55,32 +53,33 @@ export function home() {
                 <span class="header-timer--time">${time()}</span>
                 <span class="header-timer--time_zone">UTC +3:30</span>
             </div>
-         </div>`
-        );
+         </div>`;
     };
-
 
     // ============================================================
     // 🦸 HERO — greeting + name + mini stat cards + poem
     // ============================================================
-    const hero = function() {
-
+    const hero = function () {
         // Returns "morning" / "afternoon" / "evening" / "night"
         // based on the current hour.
         const timeRange = () => {
             const hour = new Date().getHours();
             let time_range = "";
 
-            if (hour >= 5 && hour <= 11)       { time_range = "morning"; }
-            else if (hour >= 12 && hour <= 16) { time_range = "afternoon"; }
-            else if (hour >= 17 && hour <= 21) { time_range = "evening"; }
-            else if (hour >= 22 || hour <= 4)  { time_range = "night"; }
+            if (hour >= 5 && hour <= 11) {
+                time_range = "morning";
+            } else if (hour >= 12 && hour <= 16) {
+                time_range = "afternoon";
+            } else if (hour >= 17 && hour <= 21) {
+                time_range = "evening";
+            } else if (hour >= 22 || hour <= 4) {
+                time_range = "night";
+            }
 
             return `${time_range}`;
         };
 
-        return (
-        `<div class="hero">
+        return `<div class="hero">
             <div class="hero-main">
                 <div class="hero-main--personal-information">
                     <span class="hero-main--personal-information--greeting-mesage">
@@ -95,24 +94,21 @@ export function home() {
             <div class="hero-poem">
                 <p class="hero-poem--content"><span class="hero-poem--content_light">some</span><br><span class="hero-poem--content_dark">stories</span><br><span class="hero-poem--content_dark">are never</span><br><span class="hero-poem--content_light">meant to be</span><br><span class="hero-poem--content_light">found</span></p>
             </div>
-         </div>`
-        );
+         </div>`;
     };
-
 
     // ============================================================
     // 🎵 TOP SONGS SECTION — horizontal cards + Show All popup
     // ============================================================
-    const topSongsSection = function() {
+    const topSongsSection = function () {
         const songs = getSongs();
         let songcards = "";
 
         // Build the first 10 song cards (or fewer if there aren't 10).
         // The full list is only rendered when "Show All" is clicked.
         for (let i = 0; i < 10 && i < songs.length; i++) {
-            songcards += `${song_card(songs[i].id, songs[i].cover, songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
+            songcards += `${song_card(songs[i].id, songs[i].cover, songs[i].title, songs[i].artist, i + 1, songs[i].plays)}`;
         }
-
 
         // --------------------------------------------------------
         // ⬅️➡️ ARROW NAVIGATION — scroll the row left / right
@@ -120,80 +116,94 @@ export function home() {
         // setTimeout(100) waits for the HTML returned by this function
         // to actually be in the DOM before querying elements.
         setTimeout(() => {
-            const container = document.querySelector('.top-songs-section--content');
-            const nav       = document.querySelector('.top-songs-section--header--nav');
-            const leftBtn   = document.getElementById('top-songs-section--header--nav--btn_left');
-            const rightBtn  = document.getElementById('top-songs-section--header--nav--btn_right');
+            const container = document.querySelector(".top-songs-section--content");
+            const nav = document.querySelector(".top-songs-section--header--nav");
 
-            if (!container || !nav || !leftBtn || !rightBtn) return;
+            if (!container || !nav) return;
 
             const scrollAmount = 524;
 
             // Arrow clicks
-            nav.addEventListener('click', (e) => {
-                if (e.target.closest('#top-songs-section--header--nav--btn_left')) {
-                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                } else if (e.target.closest('#top-songs-section--header--nav--btn_right')) {
-                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            nav.addEventListener("click", (e) => {
+                if (e.target.closest("#top-songs-section--header--nav--btn_left")) {
+                    container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+                } else if (e.target.closest("#top-songs-section--header--nav--btn_right")) {
+                    container.scrollBy({ left: scrollAmount, behavior: "smooth" });
                 }
             });
 
             // Enable/disable arrows based on scroll position
             const updateArrows = () => {
-                const atStart = container.scrollLeft <= 0;
-                const atEnd   = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
-                leftBtn.classList.toggle('disabled', atStart);
-                rightBtn.classList.toggle('disabled', atEnd);
+                // Fresh lookup every time — Lucide may have swapped the <i> for an <svg>
+                const leftBtn = document.getElementById("top-songs-section--header--nav--btn_left");
+                const rightBtn = document.getElementById("top-songs-section--header--nav--btn_right");
+                if (!leftBtn || !rightBtn) return;
+
+                const atStart = container.scrollLeft <= 1;
+                const atEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+
+                leftBtn.classList.toggle("disabled", atStart);
+                rightBtn.classList.toggle("disabled", atEnd);
             };
 
             // React to scroll + resize
-            container.addEventListener('scroll', updateArrows);
-            window.addEventListener('resize', updateArrows);
+            container.addEventListener("scroll", updateArrows);
+            window.addEventListener("resize", updateArrows);
 
-            // 🔥 ResizeObserver catches when the container itself resizes
-            // (fonts loading, images loading, layout shifts, etc.)
+            // ResizeObserver on container AND every card
             const ro = new ResizeObserver(updateArrows);
             ro.observe(container);
 
-            // Run multiple times to catch late layout changes
-            updateArrows();
-            requestAnimationFrame(updateArrows);
-            setTimeout(updateArrows, 100);
-            setTimeout(updateArrows, 500);
-        }, 100);
+            container.querySelectorAll(".song_card").forEach((card) => {
+                ro.observe(card);
+            });
 
+            // Catch images that haven't loaded yet
+            container.querySelectorAll("img").forEach((img) => {
+                if (img.complete) return;
+                img.addEventListener("load", updateArrows, { once: true });
+            });
+
+            // Catch cards added later
+            const mo = new MutationObserver(updateArrows);
+            mo.observe(container, { childList: true, subtree: true });
+
+            // Run once immediately
+            updateArrows();
+        }, 100);
 
         // --------------------------------------------------------
         // 🔄 ICON REFRESH — re-render lucide icons on demand
         // --------------------------------------------------------
-        document.addEventListener('icons:refresh', () => { icons(); });
-
+        document.addEventListener("icons:refresh", () => {
+            icons();
+        });
 
         // --------------------------------------------------------
         // 🖱️ MAIN SECTION CLICK HANDLER — click a song card
         // --------------------------------------------------------
         setTimeout(() => {
-            const container = document.querySelector('.top-songs-section--content');
+            const container = document.querySelector(".top-songs-section--content");
             if (!container) return;
 
-            container.addEventListener('click', async (e) => {
-                const card = e.target.closest('.song_card');
+            container.addEventListener("click", async (e) => {
+                const card = e.target.closest(".song_card");
                 if (!card) return;
 
                 const id = parseInt(card.dataset.id);
 
                 // Insert the player component into the page on first click.
                 // The guard prevents duplicate players on repeated clicks.
-                if (!document.querySelector('.player')) {
-                    document.body.insertAdjacentHTML('beforeend', player());
+                if (!document.querySelector(".player")) {
+                    document.body.insertAdjacentHTML("beforeend", player());
                 }
 
                 // Hand the id to the audio engine
                 playSong(id);
 
                 // Capture state BEFORE toggling (needed for the wasActive check)
-                const before    = getCurrentSongState();
-                const wasActive = before.id === id && (before.state === 'playing' || before.state === 'paused');
+                const before = getCurrentSongState();
+                const wasActive = before.id === id && (before.state === "playing" || before.state === "paused");
 
                 // Toggle state + update all cards (main + popup)
                 toggleSongState(id);
@@ -204,7 +214,7 @@ export function home() {
 
                 // Otherwise → this is a new play, bump the count
                 const currentPlays = parseInt(card.dataset.plays);
-                const newPlays     = currentPlays + 1;
+                const newPlays = currentPlays + 1;
 
                 update(() => {
                     updateAllSongCards(id, newPlays);
@@ -213,7 +223,7 @@ export function home() {
                 try {
                     await updateSongs(id, newPlays);
                 } catch (err) {
-                    console.error('Failed to save play count:', err);
+                    console.error("Failed to save play count:", err);
                     // Roll back the optimistic UI update on failure
                     update(() => {
                         updateAllSongCards(id, currentPlays);
@@ -222,37 +232,42 @@ export function home() {
             });
         }, 100);
 
-
         // --------------------------------------------------------
         // 📂 SHOW ALL — popup with every song
         // --------------------------------------------------------
         setTimeout(() => {
-            const showAll_btn = document.querySelector('.top-songs-section--header--nav--show_all_btn');
+            const showAll_btn = document.querySelector(".top-songs-section--header--nav--show_all_btn");
             if (!showAll_btn) return;
 
             // One popup element reused across openings. It's appended to
             // <body> on click and removed on close.
-            const popup = document.createElement('div');
-            popup.className = 'section-popup-backdrop';
+            const popup = document.createElement("div");
+            popup.className = "section-popup-backdrop";
 
-            showAll_btn.addEventListener('click', () => {
-
+            showAll_btn.addEventListener("click", () => {
                 // Build all cards fresh each time the popup opens
                 let allSongcards = "";
                 for (let i = 0; i < songs.length; i++) {
-                    allSongcards += `${song_card(songs[i].id, songs[i].cover, songs[i].title, songs[i].artist, i+1, songs[i].plays)}`;
+                    allSongcards += `${song_card(songs[i].id, songs[i].cover, songs[i].title, songs[i].artist, i + 1, songs[i].plays)}`;
                 }
 
-                popup.innerHTML =
-                `<div class="section-popup">
-                    <div class="section-popup--header">
-                        <i data-lucide="x" class="section-popup--close_btn"></i>
-                    </div>
-                    <div class="section-popup--content">
-                        ${allSongcards}
-                    </div>
-                 </div>`;
+                popup.innerHTML = `<div class="section-popup">
+            <div class="section-popup--header">
+                <i data-lucide="x" class="section-popup--close_btn"></i>
+            </div>
+            <div class="section-popup--content">
+                ${allSongcards}
+            </div>
+         </div>`;
                 document.body.appendChild(popup);
+
+                // Add .popup_ready on the next frame so the browser sees the
+                // opacity:0 state first, then transitions to opacity:1.
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        popup.classList.add("popup_ready");
+                    });
+                });
 
                 // Render lucide icons inside the popup
                 icons();
@@ -260,27 +275,26 @@ export function home() {
                 // Apply current playing state to popup cards
                 updateAllCardState();
 
-
                 // ---- Popup card clicks ----
                 setTimeout(() => {
-                    const container = document.querySelector('.section-popup--content');
+                    const container = document.querySelector(".section-popup--content");
                     if (!container) return;
 
-                    container.addEventListener('click', async (e) => {
-                        const card = e.target.closest('.song_card');
+                    container.addEventListener("click", async (e) => {
+                        const card = e.target.closest(".song_card");
                         if (!card) return;
 
                         const id = parseInt(card.dataset.id);
 
                         // Same guard as main section — insert player if missing
-                        if (!document.querySelector('.player')) {
-                            document.body.insertAdjacentHTML('beforeend', player());
+                        if (!document.querySelector(".player")) {
+                            document.body.insertAdjacentHTML("beforeend", player());
                         }
 
                         playSong(id);
 
-                        const before    = getCurrentSongState();
-                        const wasActive = before.id === id && (before.state === 'playing' || before.state === 'paused');
+                        const before = getCurrentSongState();
+                        const wasActive = before.id === id && (before.state === "playing" || before.state === "paused");
 
                         toggleSongState(id);
                         updateAllCardState();
@@ -289,7 +303,7 @@ export function home() {
                         if (wasActive) return;
 
                         const currentPlays = parseInt(card.dataset.plays);
-                        const newPlays     = currentPlays + 1;
+                        const newPlays = currentPlays + 1;
 
                         update(() => {
                             updateAllSongCards(id, newPlays);
@@ -298,7 +312,7 @@ export function home() {
                         try {
                             await updateSongs(id, newPlays);
                         } catch (err) {
-                            console.error('Failed to save play count:', err);
+                            console.error("Failed to save play count:", err);
                             update(() => {
                                 updateAllSongCards(id, currentPlays);
                             });
@@ -306,30 +320,28 @@ export function home() {
                     });
                 }, 0);
 
-
                 // ---- Popup close — click the X button OR the backdrop ----
                 setTimeout(() => {
-                    const backdrop = document.querySelector('.section-popup-backdrop');
+                    const backdrop = document.querySelector(".section-popup-backdrop");
                     if (!backdrop) return;
 
-                    backdrop.addEventListener('click', (e) => {
-                        const clickedCloseBtn = e.target.closest('.section-popup--close_btn');
+                    backdrop.addEventListener("click", (e) => {
+                        const clickedCloseBtn = e.target.closest(".section-popup--close_btn");
                         const clickedBackdrop = e.target === backdrop;
 
                         if (clickedCloseBtn || clickedBackdrop) {
-                            backdrop.remove();
+                            backdrop.classList.remove("popup_ready");
+                            setTimeout(() => backdrop.remove(), 500); // match CSS transition duration
                         }
                     });
                 }, 10);
             });
         }, 100);
 
-
         // --------------------------------------------------------
         // 📄 SECTION HTML
         // --------------------------------------------------------
-        return (
-        `<div class="top-songs-section">
+        return `<div class="top-songs-section">
             <div class="top-songs-section--header">
                 <span class="section--title">top songs</span>
                 <div class="top-songs-section--header--nav">
@@ -341,14 +353,51 @@ export function home() {
             <div class="top-songs-section--content">
                 ${songcards}
             </div>
-         </div>`
-        );
+         </div>`;
     };
 
+    //Movies Section
+    const moviesSection = function () {
+        const movies = getMovies();
+        const unwatched = movies.filter(m => m.watches === 0);
+        let moviecards = "";
+        for (const movie of unwatched) {
+            moviecards += `${movie_card(movie.id, movie.preview, movie.title, movie.year, movie.rating.toFixed(1), movie.watches)}`;
+        }
+
+
+        setTimeout(() => {
+    const container = document.querySelector('.movies-section--content');
+    if (!container) return;
+
+    container.addEventListener('click', (e) => {
+        const card = e.target.closest('.movie_card');
+        if (!card) return;
+
+        const id = card.dataset.id;   // "M1" — string, no parseInt
+        playMovie(id);
+    });
+}, 100);
+        return (
+            `<div class="movies-section">
+                <div class="movies-section--header">
+                    <span class="section--title">watching</span>
+                    <div class="movies-section--header--nav">
+                        <span class="movies-section--header--nav--show_all_btn">View All</span>
+                        <i data-lucide="chevron-left" class="movies-section--header--nav--btn" id="movies-section--header--nav--btn_left"></i>
+                        <i data-lucide="chevron-right" class="movies-section--header--nav--btn" id="movies-section--header--nav--btn_right"></i>
+                    </div>
+                </div>
+                <div class="movies-section--content">
+                    ${moviecards}
+                </div>
+             </div>`
+        );
+    };
 
     // ============================================================
     // 🚀 INIT — render icons, then return the full page HTML
     // ============================================================
     icons();
-    return `${header()}${hero()}${topSongsSection()}`;
+    return `${header()}${hero()}${topSongsSection()}<hr><div class="side_by_side--section">${moviesSection()}</div>`;
 }

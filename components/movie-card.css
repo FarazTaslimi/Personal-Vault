@@ -1,0 +1,109 @@
+.movie_card {
+    width: 200px;
+    /*height: 400px;*/
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.movie_card:hover .movie_card--preview-overlay {
+    opacity: 1;
+}
+
+.movie_card--preview {
+    width: 100%;
+    height: 240px;
+    border: 1px solid rgba(124, 92, 252, 0.15);
+    border-radius: 12px;
+    position: relative;
+}
+
+.movie_card--preview-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background-color: rgba(124, 92, 252, 0.4);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.175s ease-out;
+}
+
+.movie_card--preview-overlay--icon-btn {
+    padding: 12px 16px;
+    border-radius: 50%;
+    background-color: purple;
+    box-shadow: 0 0 50px purple;
+    transition: transform 0.08s ease-in;
+}
+
+.movie_card--preview-overlay--icon-btn:hover {
+    transform: scale(1.2);
+}
+
+.movie_card--preview-overlay--icon {
+    fill: white;
+    width: 3rem;
+    height: 3rem;
+}
+
+.movie_card--preview-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px
+}
+
+.movie_card--watchStatus {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background-color: #9d14df;
+    color: white;
+    font-size: 1.5rem;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid mediumpurple;
+    text-transform: uppercase;
+    font-weight: 600;
+    visibility: hidden;
+}
+
+.movie_card--info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.movie_card--info--title {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.movie_card--info--year {
+    font-size: 1.2rem;
+    color: gray;
+    font-weight: 600;
+}
+
+.movie_card--info--rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.movie_card--info--rating--icon {
+    width: 2.15rem;
+    height: 2.15rem;
+    fill: #b89c05;
+    filter: drop-shadow(0 0 25px gold) drop-shadow(0 0 50px gold);
+}
+
+.movie_card--info--rating--count {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
