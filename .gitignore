@@ -27,6 +27,8 @@ vault/**
 # ============================================================
 assets/covers/*
 !assets/covers/.gitkeep
+assets/previews/*
+!assets/previews/.gitkeep
 
 
 # ============================================================
@@ -49,3 +51,4 @@ Thumbs.db
 
 
 concepts/
+.env
